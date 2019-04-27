@@ -1,17 +1,5 @@
----
-title: "Twitter Multilingual Sentiment Analysis"
-author: "César Villamizar, José de Melo"
-date: "April 26, 2019"
-output:
-  html_document: default
-  pdf_document: default
----
-  
-  ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## Context and data questions
+
 The purpose of this document is to present an approach to classify tweets in English and Portuguese using machine learning techniques for sentiment analysis.  
 
 We will be focusing on a topic that has been on the international news since the beginning of the year ["the Venezuelan presidential crisis"](https://en.wikipedia.org/wiki/2019_Venezuelan_presidential_crisis).
