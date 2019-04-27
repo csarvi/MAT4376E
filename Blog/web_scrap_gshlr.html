@@ -192,12 +192,12 @@ $(document).ready(function () {
 </div>
 
 
-<p>This blog article is created to illustrate how to scrape data from html and Javascript rendered web pages using R and RStudio. I’m assuming that you have a basic knowledge of html and Javascript rendered websites. If not, I strongly recommend reading before these two articles : <a href="https://data-lessons.github.io/library-webscraping-DEPRECATED/02-csssel/">Introduction to web scraping</a> and <a href="%60https://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/Scraping_a_Webpage_Rendered_by_Javascript_Using_Python.php">Scraping a JS-Rendered Page</a>.</p>
+<p>This blog article is created to describe how to scrape data from html and Javascript rendered web pages using R and RStudio. I’m assuming that you have a basic knowledge of html and Javascript rendered websites. If not, I strongly recommend reading before these two articles : <a href="https://data-lessons.github.io/library-webscraping-DEPRECATED/02-csssel/">Introduction to web scraping</a> and <a href="%60https://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/Scraping_a_Webpage_Rendered_by_Javascript_Using_Python.php">Scraping a JS-Rendered Page</a>.</p>
 <div id="terms-of-use" class="section level3">
 <h3>Terms of use</h3>
-<p>It is important to understand that while the information you find in most websites is available for the general public, it doesn’t mean you can crawl data from any web page to use it for research, educational or business purposes. Too many requests per second made by the program created to extract information can generate a heavy load on the servers hosting the websites and make them vulnerable to cyber attacks. In addition, there could also be an interest in some business to extract personal data for-profit purposes. Organizations have taken steps to minimize the use of these techniques by adding features like double authentication. Before scrapping data from any website, you should always be aware of the terms of use and respect basic scraping “rules” like the number requests per second. In the blog post <a href="https://benbernardblog.com/web-scraping-and-crawling-are-perfectly-legal-right">¨Web Scraping and Crawling Are Perfectly Legal, Right?¨</a>, Benoit Bernard talks about more about the possible consequences of web scraping and crawling.</p>
-<p>For this blog post, I will explore how to extract data from Wikipedia and Google scholar. The information to extract is related to bibliometric data of <a href="https://en.wikipedia.org/wiki/U15_Group_of_Canadian_Research_Universities">the group of 15 Canadian Research Universities (U15).</a> and their top 100 researches by number of publications.</p>
-<p>The main packages to extract this information are <code>rvest</code> and <code>tidyverse</code> developed by <a href="https://cran.r-project.org/web/checks/check_results_hadley_at_rstudio.com.html%5D">Hadley Wickham</a>. The package <code>splahsr</code>. The package <code>scholar</code> will be used to show a co-citation analysis and main areas of research of the authors by university.</p>
+<p>It is important to understand that while the information you find in most websites is available for the general public, it doesn’t mean you can crawl data from any web page to use it for research, educational or business purposes. Too many requests per second made by the program created to extract information can generate a heavy load on the servers hosting websites and make them vulnerable to cyber attacks. In addition, there could also be an interest in some business to extract personal data for-profit purposes. Organizations have taken steps to minimize the use of these techniques by adding features like double authentication. Before scrapping data from any website, you should always be aware of the terms of use and respect basic scraping “rules” like the number requests per second. In the blog post <a href="https://benbernardblog.com/web-scraping-and-crawling-are-perfectly-legal-right">“Web Scraping and Crawling Are Perfectly Legal, Right?”</a>, Benoit Bernard talks about more about the possible consequences of web scraping and crawling.</p>
+<p>For this blog post, I will explore how to extract data from Wikipedia and Google scholar. The information to extract is related to bibliometric data of <a href="https://en.wikipedia.org/wiki/U15_Group_of_Canadian_Research_Universities">the group of 15 Canadian Research Universities (U15).</a> and their top 10 researches by number of citations.</p>
+<p>The main packages to extract this information are <code>rvest</code> and <code>tidyverse</code> developed by <a href="https://cran.r-project.org/web/checks/check_results_hadley_at_rstudio.com.html%5D">Hadley Wickham</a>. The package <code>scholar</code> will be used to show a co-citation analysis and main areas of research of the authors by university.</p>
 </div>
 <div id="data-scraping-html-websites" class="section level3">
 <h3>Data scraping: HTML websites</h3>
@@ -231,7 +231,41 @@ rankingCanUniv &lt;- xml2::read_html(&quot;https://en.wikipedia.org/wiki/Ranking
 
 #Select the second table in the rank.
 rank_univ_can  &lt;- wikiScrap(rankingCanUniv, 2)</code></pre>
-<p>There is some data wrangling to complete having a clean dataset that you can actually use for calculations, but this is the general idea of how to use the html elements on a web page with the <code>html_nodes</code>.</p>
+<p>You still need to do some data wrangling to obtain a clean dataset that you can actually use for any purpose, but this is the general idea of how to use the html elements on a web page with the <code>html_nodes</code> function of the rvest package.</p>
+</div>
+<div id="scraping-lists-of-authors-and-citations-by-university-top-10" class="section level3">
+<h3>Scraping lists of authors and citations by university (Top 10)</h3>
+<p>Using the information obtained from the Wikipedia page, I will create a data frame with a unique identifier by institutions, removing words like University and Université.</p>
+<pre class="r"><code># Creating a normalized list of u15 universities
+u15 &lt;- u15 %&gt;% 
+  stringr::str_replace(&quot;University of&quot;, &quot; &quot;) %&gt;% 
+  stringr::str_replace(&quot;University&quot;, &quot; &quot;) %&gt;% 
+  stringr::str_replace(&quot;Université de&quot;, &quot; &quot;) %&gt;% 
+  stringr::str_replace(&quot;Université&quot;, &quot; &quot;) %&gt;% 
+  stringr::str_replace(&quot;Ontario&quot;, &quot; &quot;) %&gt;% 
+  stringr::str_trim()</code></pre>
+<p>Google scholar include the <code>id</code> of the institution at the end of the url. Next step is to manually search the list of institutions’ ids and merge the data with the university name.</p>
+<pre class="r"><code>#Get the main link by institution
+url_ins &lt;- &quot;https://scholar.google.com/citations?view_op=view_org&amp;hl=en&amp;org=&quot;
+
+#Manually get the list of institutions ids in google scholar
+ins_id &lt;- c(&quot;16627554827500071773&quot;, &quot;13655899619131983200&quot;, &quot;2186568608501296974&quot;,
+            &quot;4396926741242628134&quot;, &quot;4136666809584843007&quot;, &quot;17983032966567625180&quot;, 
+            &quot;13784427342582529234&quot;, &quot;16902803553507995100&quot;, &quot;4964519586676348649&quot;,
+            &quot;5757600927927532557&quot;, &quot;15288470216663349706&quot;, &quot;7846091072518378427&quot;,
+            &quot;8515235176732148308&quot;, &quot;12436753108180256887&quot;, &quot;4065822778065209794&quot;)
+
+#merge data to identify the id with the institution
+u15_id &lt;- cbind(u15,ins_id)</code></pre>
+<p>The following lines of code will use the previous list of ids and the main link to read the html from each university and extract a list of 10 authors per university.</p>
+<pre class="r"><code>#create a function to read the html using the links of the institutions
+u15_html &lt;- lapply(seq_along(u15), function(x) {
+   y &lt;- xml2::read_html(paste0(url_ins, x))
+  print(&quot;Html was read and saved in a list, waiting 5 seconds to read next html...&quot;)
+  Sys.sleep(time = 5)
+  print(&quot;Starting to read next html...&quot;)
+  return(y)
+  })</code></pre>
 </div>
 
 
