@@ -1,0 +1,1197 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Twitter Multilingual Sentiment Analysis},
+            pdfauthor={CÃ©sar Villamizar, JosÃ© de Melo},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Twitter Multilingual Sentiment Analysis}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{CÃ©sar Villamizar, JosÃ© de Melo}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{April 26, 2019}
+
+
+\begin{document}
+\maketitle
+
+\subsection{Context and data
+questions}\label{context-and-data-questions}
+
+The purpose of this document is to present a machine learning approach
+to classify tweets in English and Portuguese using machine learning
+techniques for sentiment analysis.
+
+We will be focusing on a topic that has been on the international news
+since the beginning of the year
+\href{https://en.wikipedia.org/wiki/2019_Venezuelan_presidential_crisis}{``the
+Venezuelan presidential crisis''}.
+
+Venezuela is a democratic country and Venezuelans have officially
+re-elected Nicolas Maduro as their president in 2018. However, the
+results of this election has been deemed as fraudulent by opposition
+parties and multiple countries. With the support of the Venezuelan
+National Assembly and the international community, Juan Guaidó was
+declared acting president of the nation since 10 January 2019.
+
+The main questions we want to answer is : Are the tweets related to this
+topic and posted in April 2019 by English and Portuguese speakers mostly
+positive or negative? This is in machine learning classification problem
+using text mining to classify the opinion of each tweet. Are these
+opinions different depending on the location and/or language?
+
+\subsection{Methodology}\label{methodology}
+
+There are many examples of how to do sentiment analysis and for the
+purpose of this exercise we intend to take advantage of the work
+performed by other authors, mainly in the pre-classification of tweets
+by sentiment.
+
+In our research we encounter two main datasets with tweets
+pre-classified as positive or negative in English and Portuguese. The
+English dataset contains 1.6 million tweets and the Portuguese dataset
+has 500K tweets.
+
+Since most of the work on twitter sentiment analysis has been done in
+English, we aim to replicate the steps of the feature extraction and
+classification process, and apply a similar approach to the Portuguese
+tweets.
+
+The main steps for this project are:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Extracting data related to the Venezuelan crisis
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  1.1 Classification of Tweets in English
+\item
+  1.2 Classification of Tweets in Portuguese
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Explore twitter labelled data
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  2.1 English labelled Tweets
+\item
+  3.2 Portuguese labelled Tweets
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Building Classificaion Models for Labelled Data
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  2.1 English (Pre-processing, Feature extraction and Classification
+  Model)
+\item
+  2.2 Portuguese (Pre-processing, Feature extraction and Classification
+  Model)
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Predictions and analysis of results
+\item
+  Lessons learned and next steps
+\end{enumerate}
+
+\subsection{1. Extracting data related to the Venezuelan
+crisis}\label{extracting-data-related-to-the-venezuelan-crisis}
+
+The sentiment classification will be implemented through four steps:
+data extraction, pre-processing, feature selection, and classification
+using the classification models trained with labelled data.
+
+We start by loading the necessary packages for the project:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#LOAD PACKAGES----------------}
+
+\KeywordTok{library}\NormalTok{(caret)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(magrittr)}
+\KeywordTok{library}\NormalTok{(tm)}
+\KeywordTok{library}\NormalTok{(twitteR)}
+\KeywordTok{library}\NormalTok{(purrr)}
+\KeywordTok{library}\NormalTok{(plyr)}
+\end{Highlighting}
+\end{Shaded}
+
+We proceed to extract tweets in both languages using the authentication
+credentials obtained from the Twitter API, . The \texttt{twitteR}
+package allows to use parameters to narrow the search for specific
+location and language.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# AUTHENTICATION FOR THE TWITTER API----------------------------------------}
+
+\NormalTok{consumerKey =}\StringTok{ "FU2sd3IX4CJDHfq62HjnSn7PF"}  
+\NormalTok{consumerSecret =}\StringTok{ "iQkD1QsyRK0uqhAGzdzOoBOyzUxEfzAE79InkvhF0tzRu6IX85"}
+\NormalTok{accessToken =}\StringTok{ "110476495-PM2CXoqDMAzUJriW7ZdCC1Mc7DbuSNZAWpyh6tJU"}
+\NormalTok{accessSecret =}\StringTok{ "Nu4op1YW4IWDQLtVTXSZtAlUmmInNmn1NtjKGLJLByDpG"}
+\KeywordTok{options}\NormalTok{(}\DataTypeTok{httr_oauth_cache=}\OtherTok{TRUE}\NormalTok{)}
+
+\KeywordTok{setup_twitter_oauth}\NormalTok{(}\DataTypeTok{consumer_key =} \NormalTok{consumerKey, }\DataTypeTok{consumer_secret =} \NormalTok{consumerSecret,}
+                    \DataTypeTok{access_token =} \NormalTok{accessToken, }\DataTypeTok{access_secret =} \NormalTok{accessSecret)}
+\end{Highlighting}
+\end{Shaded}
+
+First we start with the tweets posted in English.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# CAPTURING TWEETS --------------------------------------------------}
+
+\NormalTok{nbrTwts <-}\StringTok{ }\DecValTok{9000} \CommentTok{#limit is 10K every 15 minutes}
+
+\NormalTok{vzltwts <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"#Venezuela"}\NormalTok{, }\StringTok{"#MaduroRegime"}\NormalTok{, }
+             \StringTok{"@NicolasMaduro"}\NormalTok{, }\StringTok{"@maduro_en"}\NormalTok{,}
+             \StringTok{"#VenezuelaLibre"}\NormalTok{, }\StringTok{"@jguaido"}\NormalTok{)}
+
+
+\NormalTok{vzltwts <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(vzltwts,}\DataTypeTok{collapse =} \StringTok{" OR "}\NormalTok{)}
+
+\CommentTok{# make a string for the days}
+\NormalTok{days <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(}\StringTok{"2019-04-12"}\NormalTok{), }\KeywordTok{Sys.Date}\NormalTok{(),}\DataTypeTok{by =} \DecValTok{1}\NormalTok{)) }\CommentTok{# We can only go back 10 days with the type of account we have}
+
+
+\CommentTok{#Extract Tweets in English posted in North America}
+\NormalTok{tweetList_EN <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(}\KeywordTok{seq_along}\NormalTok{(days), function(x)\{}
+  
+  \NormalTok{res_en <-}\StringTok{ }\KeywordTok{searchTwitter}\NormalTok{(vzltwts,}
+                \DataTypeTok{n =} \NormalTok{nbrTwts ,}
+                \DataTypeTok{lang =}\StringTok{"en"}\NormalTok{,}
+                \DataTypeTok{since =} \NormalTok{days[[x]],}
+                \DataTypeTok{until =} \NormalTok{days[[x]],}
+                \DataTypeTok{geocode =} \StringTok{'37.09024,-95.712891,3000km'}\NormalTok{) }\CommentTok{#North America}
+  
+  \KeywordTok{print}\NormalTok{(}\StringTok{"Tweets fetched successfully. Going to sleep now..."}\NormalTok{)}
+  \KeywordTok{Sys.sleep}\NormalTok{(}\DataTypeTok{time =} \DecValTok{1100}\NormalTok{)}
+  \KeywordTok{print}\NormalTok{(}\StringTok{"Return"}\NormalTok{)}
+  \KeywordTok{return}\NormalTok{(res_en)}
+\NormalTok{\})}
+
+\KeywordTok{saveRDS} \NormalTok{(tweetList_EN, }\StringTok{"../helpers/data_extraction/tweetList_EN.RDS"} \NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+And we continue with the twweets in portugese.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# CAPTURING TWEETS --------------------------------------------------}
+
+\CommentTok{#Extract Tweets in Portuguese posted in South America}
+\NormalTok{tweetList_PT <-}\StringTok{ }\KeywordTok{searchTwitter}\NormalTok{(vzltwts,}
+                \DataTypeTok{n =} \NormalTok{nbrTwts,}
+                \DataTypeTok{lang =}\StringTok{"pt"}\NormalTok{,}
+                \DataTypeTok{since =} \StringTok{"2014-04-15"}\NormalTok{,}
+                \DataTypeTok{geocode =} \StringTok{'-9.138173,-55.383780,2000km'}\NormalTok{) }\CommentTok{#South America}
+  
+
+\KeywordTok{saveRDS} \NormalTok{(tweetList_PT, }\StringTok{"../helpers/data_extraction/tweetList_PT.RDS"} \NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+As we obtained a list in the previous process, we need to covert it to a
+data frame.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Convert the English tweets as a data.frame}
+\NormalTok{ven_en <-}\KeywordTok{Reduce}\NormalTok{(}\StringTok{`}\DataTypeTok{c}\StringTok{`}\NormalTok{, tweetList_EN)}
+
+\NormalTok{ven_en_df <-}\StringTok{ }\KeywordTok{tbl_df}\NormalTok{(}\KeywordTok{map_df}\NormalTok{(ven_en, as.data.frame))}
+
+\KeywordTok{saveRDS}\NormalTok{(ven_en_df, }\StringTok{"../helpers/data_extraction/ven_en_df.RDS"} \NormalTok{)}
+
+
+\CommentTok{#Convert the Portuguese tweets as a data.frame}
+\NormalTok{ven_pt <-}\KeywordTok{Reduce}\NormalTok{(}\StringTok{`}\DataTypeTok{c}\StringTok{`}\NormalTok{, tweetList_PT)}
+
+\NormalTok{ven_pt_df <-}\StringTok{ }\KeywordTok{tbl_df}\NormalTok{(}\KeywordTok{map_df}\NormalTok{(ven_pt, as.data.frame))}
+
+\KeywordTok{saveRDS}\NormalTok{(ven_pt_df, }\StringTok{"../helpers/data_extraction/ven_pt_df.RDS"} \NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+After exploring the data, we found that there is duplication in the data
+extraction.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ven_en_df <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../helpers/data_extraction/ven_en_df.RDS"} \NormalTok{)}
+\NormalTok{ven_pt_df <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../helpers/data_extraction/ven_pt_df.RDS"} \NormalTok{)}
+
+\NormalTok{############### English dataset ##############}
+\CommentTok{#Select the variables we need to combine with the labelled data}
+\NormalTok{ven_en_df <-}\StringTok{ }\NormalTok{ven_en_df %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(id, text)}
+
+\CommentTok{#Create and index for duplicated rows}
+\NormalTok{dup <-}\StringTok{ }\KeywordTok{duplicated}\NormalTok{(ven_en_df$text)}
+
+\CommentTok{#Remove duplicates from the dataset}
+\NormalTok{ven_en_df <-}\StringTok{ }\NormalTok{ven_en_df[!dup, ]}
+
+\NormalTok{############### Portuguese dataset ##############}
+
+\NormalTok{ven_pt_df <-}\StringTok{ }\NormalTok{ven_pt_df %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(id, text)}
+
+\CommentTok{#Create and index for duplicated rows}
+\NormalTok{dup_pt <-}\StringTok{ }\KeywordTok{duplicated}\NormalTok{(ven_pt_df$text)}
+
+\CommentTok{#Remove duplicates from the dataset}
+\NormalTok{ven_pt_df <-}\StringTok{ }\NormalTok{ven_pt_df[!dup_pt, ]}
+
+\CommentTok{#Change the column name tweet_text to text}
+
+\NormalTok{ven_pt_df <-}\StringTok{ }\NormalTok{ven_pt_df  %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{rename}\NormalTok{(}\DataTypeTok{tweet_text =} \NormalTok{text)}
+
+\KeywordTok{str}\NormalTok{(ven_pt_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{2.Explore classified data.}\label{explore-classified-data.}
+
+\subsubsection{2.1 English labelled
+Tweets}\label{english-labelled-tweets}
+
+The English dataset was created by Go, Bhayani \& Huang {[}1{]} and it
+contains tweets extracted between August and September 2018. The tweets
+were labelled as positive and negative using a distant classification
+supervision method. The dataset includes the classification positive and
+negative, the tweet id, date, flag, user and the text of the tweet.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#IMPORT ENGLISH LABELLED DATASET ----}
+\NormalTok{TwitTerData_EN <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"../data/labeled_en/twitterSentiment.csv"}\NormalTok{, }\DataTypeTok{stringsAsFactors =} \NormalTok{F, }\DataTypeTok{header =} \NormalTok{F)}
+
+\CommentTok{#Set names of the variables}
+\NormalTok{colnames <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"target"}\NormalTok{, }\StringTok{"id"}\NormalTok{, }\StringTok{"date"}\NormalTok{, }\StringTok{"flag"}\NormalTok{, }\StringTok{"user"}\NormalTok{, }\StringTok{"text"}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(TwitTerData_EN) <-colnames}
+ 
+\CommentTok{#Save data as RDS file}
+\KeywordTok{saveRDS}\NormalTok{(TwitTerData_EN,}\StringTok{"../data/labeled_en/twtr_dataset_en.RDS"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+The dataset has 50\% positive and 50\% negative labels, 0 for negative
+tweets and 4 for positive tweets.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Identify the frequency of classified sentiments }
+\NormalTok{TwitTerData_EN <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/labeled_en/twtr_dataset_en.RDS"}\NormalTok{)}
+
+\NormalTok{sentfrequ <-}\StringTok{ }\NormalTok{TwitTerData_EN %>%}
+\StringTok{    }\NormalTok{dplyr::}\KeywordTok{select}\NormalTok{(target) %>%}\StringTok{ }
+\StringTok{    }\NormalTok{dplyr::}\KeywordTok{count}\NormalTok{(target)}
+  
+\NormalTok{sentfrequ}
+\end{Highlighting}
+\end{Shaded}
+
+We will convert this classification to 0 for negative and 1 for
+positive, and creating a new column call \texttt{sentiment} to save the
+classification.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Convert sentiment to 0 negative and 1 positive}
+\NormalTok{TwitTerData_EN <-}\StringTok{ }\NormalTok{TwitTerData_EN %>%}
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{target =} \NormalTok{dplyr::}\KeywordTok{if_else}\NormalTok{(target ==}\StringTok{ }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)) %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{sentiment =} \KeywordTok{as.factor}\NormalTok{(target))}\CommentTok{# change data type from character to factor}
+
+\KeywordTok{str}\NormalTok{(TwitTerData_EN)}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{1.2 Portuguese labelled
+Tweets}\label{portuguese-labelled-tweets}
+
+The Portuguese dataset was created by de Santiago {[}2{]} using a
+similar approach than the one used by Go. et al. The dataset was
+collected using 100 political terms and it also includes the tweet id,
+the text, date and the labelled sentiment.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#IMPORT PORTUGUESE LABELLED DATASET ----}
+\NormalTok{TwitTerData_PT <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"../data/labeled_pt/Train500.csv"}\NormalTok{, }\DataTypeTok{stringsAsFactors =} \NormalTok{F)}
+
+
+
+\CommentTok{#Convert sentiment to 0 negative and 1 positive}
+\NormalTok{TwitTerData_PT <-}\StringTok{ }\NormalTok{TwitTerData_PT %>%}
+\StringTok{    }\NormalTok{dplyr::}\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{sentiment =} \KeywordTok{as.factor}\NormalTok{(sentiment))}\CommentTok{# change data type from character to factor}
+
+
+\KeywordTok{str}\NormalTok{(TwitTerData_PT)}
+
+\KeywordTok{saveRDS}\NormalTok{(TwitTerData_PT, }\StringTok{"../data/labeled_pt/TwitTerData_PT.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Identify the frequency of classified sentiments }
+\NormalTok{TwitTerData_PT<-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/labeled_pt/twtr_dataset_pt.RDS"}\NormalTok{)}
+
+
+\NormalTok{sentfrequ <-}\StringTok{ }\NormalTok{TwitTerData_PT %>%}
+\StringTok{    }\NormalTok{dplyr::}\KeywordTok{select}\NormalTok{(sentiment) %>%}\StringTok{ }
+\StringTok{    }\NormalTok{dplyr::}\KeywordTok{count}\NormalTok{(sentiment)}
+  
+\NormalTok{sentfrequ}
+\end{Highlighting}
+\end{Shaded}
+
+The dataset has as well a distribution of 50\% positive and 50\%
+negative labels, 0 for negative tweets and 1 for positive tweets.
+
+\subsubsection{2. Building Classificaion Models for Labelled
+Data}\label{building-classificaion-models-for-labelled-data}
+
+\paragraph{2.1 English (Pre-processing, Feature extraction and
+Classification
+Model)}\label{english-pre-processing-feature-extraction-and-classification-model}
+
+The first step is to combine the extracted and labelled dataset to
+create a common corpus
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{TwitTerData_EN <-}\StringTok{ }\NormalTok{plyr::}\KeywordTok{rbind.fill}\NormalTok{(TwitTerData_EN, ven_en_df)}
+\end{Highlighting}
+\end{Shaded}
+
+We start by creating a function to remove unnecessary information from
+the tweet and then apply it to the dataset, e.g.~removing the stop
+words, white spaces, repeating words, emoticons and \#hash tags.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ProcessTweets <-}\StringTok{ }\NormalTok{function (x) \{}
+  
+  \CommentTok{# select the column that has the tweet text}
+  \NormalTok{tweet <-}\StringTok{ }\NormalTok{x$text}
+  \CommentTok{# remove @user tagged in the tweet}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"@}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S+"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# remove #hashtags in the text}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"#}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S+"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# remove links}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"http}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S+"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# remove punctuation }
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[[:punct:]]"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# remove numbers e.g. times}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[[:digit:]]"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# normalize words -> convert every word to lowercase}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{tolower}\NormalTok{(tweet)}
+  \CommentTok{# remove stop words using the tm stopword lexicon}
+  \NormalTok{tweet <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{removeWords}\NormalTok{(tweet, tm::}\KeywordTok{stopwords}\NormalTok{(}\StringTok{"English"}\NormalTok{))}
+  \CommentTok{# remove stop words using the tm stopword lexicon}
+  \NormalTok{tweet <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{removeWords}\NormalTok{(tweet, tm::}\KeywordTok{stopwords}\NormalTok{(}\StringTok{"English"}\NormalTok{))}
+  \CommentTok{#Stem document}
+  \NormalTok{tweet <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{stemDocument}\NormalTok{(tweet, }\DataTypeTok{language =} \StringTok{"en"}\NormalTok{)}
+  \CommentTok{# replace letters that have more than 3 repetition}
+  \CommentTok{# this deals with words like looooong and soooooooo and change them to long and so   }
+  \NormalTok{regExp <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(letters, function(x) }\KeywordTok{paste0}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\KeywordTok{rep}\NormalTok{(x, }\DecValTok{3}\NormalTok{), }\DataTypeTok{collapse=}\StringTok{""}\NormalTok{), }\StringTok{"+"}\NormalTok{))}
+  \NormalTok{for(i in }\KeywordTok{seq_along}\NormalTok{(regExp))\{}
+    \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\DataTypeTok{x =} \NormalTok{tweet, }\DataTypeTok{pattern =} \NormalTok{regExp[[i]], }\DataTypeTok{replacement =} \NormalTok{letters[[i]])}
+  \NormalTok{\}}
+  \CommentTok{#deals with special characters in the text }
+  \NormalTok{tweet<-}\StringTok{ }\KeywordTok{iconv}\NormalTok{(tweet, }\StringTok{"latin1"}\NormalTok{, }\StringTok{"ASCII"}\NormalTok{, }\StringTok{""}\NormalTok{)}
+  \CommentTok{# remove words less than 2 characters}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"(}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{b)?}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{w\{1,2\}(}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{b)?"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{#Remove leading and/or trailing whitespace and other white spaces}
+  \NormalTok{tweet <-}\KeywordTok{trimws}\NormalTok{(tweet)}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[ }\CharTok{\textbackslash{}t}\StringTok{]\{2,\}"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# bind processed tweets with the data frame}
+  \NormalTok{x <-}\StringTok{ }\KeywordTok{data.frame} \NormalTok{(}\KeywordTok{cbind.data.frame}\NormalTok{(}\DataTypeTok{id =} \NormalTok{x$id,}
+                         \DataTypeTok{text =} \NormalTok{x$text,}
+                         \DataTypeTok{sentiment =} \NormalTok{x$sentiment,}
+                         \DataTypeTok{text_sa =} \NormalTok{tweet))                             }
+  \KeywordTok{return}\NormalTok{(x)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Now we apply the function to the dataset to process the tweets. Since
+this is a large dataset and depending on the configuration of the
+computer it can take a considerable amount of time to process.
+Throughout the code we are saving the results as RDS files in case there
+is a need to skip some of the steps.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{TwitTerData_EN_Processed <-}\StringTok{ }\KeywordTok{ProcessTweets}\NormalTok{(TwitTerData_EN)}
+
+\KeywordTok{str}\NormalTok{(TwitTerData_EN_Processed)}
+\end{Highlighting}
+\end{Shaded}
+
+The variable \texttt{text\_sa} was converted as a factor and it needs to
+be a character vector
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{TwitTerData_EN_Processed$text_sa <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(TwitTerData_EN_Processed$text_sa)}
+
+\CommentTok{#Filter out tweets that have no words associated after the initial processing}
+\NormalTok{TwitTerData_EN_Processed <-}\StringTok{ }\NormalTok{TwitTerData_EN_Processed %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(text_sa !=}\StringTok{ ""}\NormalTok{)}
+
+\KeywordTok{saveRDS}\NormalTok{(TwitTerData_EN_Processed, }\StringTok{"../data/labeled_en/TwitTerData_EN_Processed.RDS"}\NormalTok{)}
+  
+\KeywordTok{str}\NormalTok{(TwitTerData_EN_Processed)}
+\end{Highlighting}
+\end{Shaded}
+
+The next step is to extract the features of the tweets by converting the
+processed text to a document text matrix using the \texttt{tm} package.
+We will also remove tweets that have no text after the pre-processing.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Generate document text matrix}
+
+\NormalTok{TwitTerData_EN_Processed <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/labeled_en/TwitTerData_EN_Processed.RDS"}\NormalTok{)}
+
+\NormalTok{ENTweetCorpus <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{Corpus}\NormalTok{(tm::}\KeywordTok{VectorSource}\NormalTok{(TwitTerData_EN_Processed$text_sa))}
+
+\NormalTok{dtm_EN <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{DocumentTermMatrix}\NormalTok{(ENTweetCorpus)}
+
+\KeywordTok{saveRDS}\NormalTok{(dtm_EN, }\StringTok{"../data/labeled_en/dtm_EN.RDS"}\NormalTok{)}
+
+\CommentTok{#remove sparse terms}
+\NormalTok{dtm_EN_sparse <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{removeSparseTerms}\NormalTok{(dtm_EN, .}\DecValTok{99}\NormalTok{)}
+
+\KeywordTok{saveRDS}\NormalTok{(dtm_EN_sparse, }\StringTok{"../data/labeled_en/dtm_EN_sparse.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Need to increase memory size to complete this part because the configuration of my machine}
+\KeywordTok{memory.limit}\NormalTok{(}\DataTypeTok{size=}\DecValTok{53000}\NormalTok{)}
+
+\CommentTok{#convert dtm as a matrix}
+\NormalTok{ENdtm <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(dtm_EN_sparse)}
+
+\KeywordTok{saveRDS}\NormalTok{(ENdtm, }\StringTok{"../data/labeled_en/ENdtm.RDS"}\NormalTok{)}
+
+\CommentTok{#convert matrix as data frame}
+\NormalTok{ENdtmDF <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(ENdtm)}
+
+\CommentTok{#add sentiment target to the data frame}
+\NormalTok{ENdtmDF_sa <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(ENdtmDF, }\DataTypeTok{sentiment_target =} \NormalTok{TwitTerData_EN_Processed$sentiment)}
+
+\CommentTok{#confirm there are not Na values in the dataset}
+\KeywordTok{anyNA}\NormalTok{(ENdtmDF_sa)}
+
+\CommentTok{#save EN_dtm as an RDS}
+\KeywordTok{saveRDS} \NormalTok{(ENdtmDF_sa, }\StringTok{"../data/labeled_en/ENdtmDF_sa.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+As we have now converted the dataset to a document text matrix for the
+English tweets, the next step is to start building the classification
+model. The classification model used in this project is based on the
+Naive Bayes logistic algorithm. Because of machine configuration, we
+will only use 30\% of the data and split it in 80/20 for training and
+testing. We use the \texttt{caret} package to complete this section of
+the process.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ENdtmDF_sa <- readRDS("../data/labeled_en/ENdtmDF_sa.RDS") ## - > start here if you only want to run the model}
+
+\CommentTok{#Filter out the dataset with the tweets extracted linked to the venezuelan conflict }
+\NormalTok{holdout_en <-}\StringTok{ }\KeywordTok{is.na}\NormalTok{(ENdtmDF_sa$sentiment_target)}
+
+\NormalTok{ENdtmDF_sa <-}\StringTok{ }\NormalTok{ENdtmDF_sa[!holdout_en, ]}
+
+\CommentTok{# Extract sample of the dataset   }
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{9876}\NormalTok{)}
+\NormalTok{EN_index <-}\StringTok{ }\NormalTok{caret::}\KeywordTok{createDataPartition}\NormalTok{(ENdtmDF_sa$sentiment_target, }\DataTypeTok{p =} \FloatTok{0.25}\NormalTok{, }
+                                       \DataTypeTok{list =} \OtherTok{FALSE}\NormalTok{, }
+                                       \DataTypeTok{times =} \DecValTok{1}\NormalTok{)}
+
+\NormalTok{ENdtmDF_sample <-}\StringTok{ }\NormalTok{ENdtmDF_sa[EN_index, ]}
+
+\CommentTok{#confirm that the number of classification variables is distributed equally}
+\KeywordTok{table}\NormalTok{(ENdtmDF_sample$sentiment)}
+\end{Highlighting}
+\end{Shaded}
+
+The result is a sample consisting of 198,741 negative tweets and 198,597
+positive tweets. This dataset will be split in training and testing.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Split dataset in training (80%) and testing (20%)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2312}\NormalTok{)}
+\NormalTok{EN_index_sample <-}\StringTok{ }\NormalTok{caret::}\KeywordTok{createDataPartition}\NormalTok{(ENdtmDF_sample$sentiment, }\DataTypeTok{p =} \FloatTok{0.8}\NormalTok{, }
+                                             \DataTypeTok{list =} \OtherTok{FALSE}\NormalTok{, }
+                                             \DataTypeTok{times =} \DecValTok{1}\NormalTok{)      }
+
+\NormalTok{EN_training <-}\StringTok{ }\NormalTok{ENdtmDF_sample[EN_index_sample, ]}
+\NormalTok{EN_test  <-}\StringTok{ }\NormalTok{ENdtmDF_sample[-EN_index_sample,]}
+
+\CommentTok{#verify the distribution of the dataset }
+\KeywordTok{table}\NormalTok{(EN_training$sentiment_target)}
+
+    \CommentTok{#save EN_dtm as an RDS}
+    \KeywordTok{saveRDS} \NormalTok{(EN_training, }\StringTok{"../data/labeled_en/EN_training.RDS"}\NormalTok{)}
+    \KeywordTok{saveRDS} \NormalTok{(EN_test, }\StringTok{"../data/labeled_en/EN_test.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The final step is to run the classification model, using the Bayesian
+Generalized Linear Models for supervised machine learning. Please note
+that this process can take up to an hour depending on the configuration
+of your machine.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Need to increase memory to run the process in my machine}
+\KeywordTok{memory.limit}\NormalTok{(}\DataTypeTok{size=} \DecValTok{53000}\NormalTok{)    }
+
+\CommentTok{# Training the model}
+\NormalTok{StartTIme <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{fit <-}\StringTok{ }\NormalTok{caret::}\KeywordTok{train}\NormalTok{(sentiment_target ~}\StringTok{ }\NormalTok{., }\DataTypeTok{data =} \NormalTok{EN_training, }\DataTypeTok{method =} \StringTok{'bayesglm'}\NormalTok{)}
+\NormalTok{EndTime <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{EndTime -}\StringTok{ }\NormalTok{StartTIme}
+
+\CommentTok{#save the model}
+\KeywordTok{saveRDS}\NormalTok{(fit, }\StringTok{"../data/labeled_en/fit.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+And test the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Need to increase memory to run the process in my machine}
+\KeywordTok{memory.limit}\NormalTok{(}\DataTypeTok{size=} \DecValTok{53000}\NormalTok{)    }
+
+\NormalTok{EN_test <-}\StringTok{ }\KeywordTok{readRDS} \NormalTok{(}\StringTok{"../data/labeled_en/EN_test.RDS"}\NormalTok{)}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/labeled_en/fit.RDS"}\NormalTok{)}
+
+
+\CommentTok{# Testing the model}
+\NormalTok{predict <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(fit, }\DataTypeTok{newdata =} \NormalTok{EN_test)}
+
+
+\KeywordTok{saveRDS} \NormalTok{(predict, }\StringTok{"../data/labeled_en/predict.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Verify the results}
+\NormalTok{fit }
+
+\CommentTok{#confirm the results}
+\NormalTok{expected_EN <-}\StringTok{ }\NormalTok{EN_test$sentiment_target}
+
+\NormalTok{results_EN <-}\StringTok{ }\KeywordTok{confusionMatrix}\NormalTok{(}\DataTypeTok{data =} \NormalTok{predict, }\DataTypeTok{reference =} \NormalTok{expected_EN)}
+
+\NormalTok{results_EN}
+\end{Highlighting}
+\end{Shaded}
+
+The accuracy of the results of the training and testing model is low,
+only 66\%. We estimate that using more data to train the model can
+increase the accuracy of the model. For the purpose of this project we
+will apply this model to the data extraction of English tweets and
+predict the outcome of the obtained level of accuracy.
+
+\subsubsection{2.2 Portuguese (Pre-processing, Feature extraction and
+Classification
+Model)}\label{portuguese-pre-processing-feature-extraction-and-classification-model}
+
+We'll combine the Portuguese extracted dataset with the labelled dataset
+to create a common corpus
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{TwitTerData_PT <-}\StringTok{ }\NormalTok{plyr::}\KeywordTok{rbind.fill}\NormalTok{(TwitTerData_PT, ven_pt_df)}
+\end{Highlighting}
+\end{Shaded}
+
+As we did with the English tweets, we will use a similar function to
+remove words from the tweets in Portuguese. In addition to the process
+of English tweets, we will also identify other stop words and special
+characters.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ProcessTweets_PT <-}\StringTok{ }\NormalTok{function (x) \{}
+  
+  \CommentTok{# select the column that has the tweet text}
+  \NormalTok{tweet <-}\StringTok{ }\NormalTok{x$tweet_text}
+  \CommentTok{# remove @user tagged in the tweet}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"@}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S+"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# remove #hashtags in the text}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"#}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S+"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# remove links}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"http}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S+"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# remove punctuation }
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[[:punct:]]"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# remove numbers e.g. times}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[[:digit:]]"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# normalize words -> convert every word to lowercase}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{tolower}\NormalTok{(tweet)}
+  \CommentTok{# remove stop words using the tm stopword lexicon}
+  \NormalTok{tweet <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{removeWords}\NormalTok{(tweet, tm::}\KeywordTok{stopwords}\NormalTok{(}\StringTok{"portuguese"}\NormalTok{))}
+  \CommentTok{# remove stop words using the tm stopword lexicon}
+  \NormalTok{tweet <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{removeWords}\NormalTok{(tweet, }\KeywordTok{c}\NormalTok{(}\StringTok{"pra"}\NormalTok{, }\StringTok{"vou"} \NormalTok{))}
+  \CommentTok{# remove other simbols in the text}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"-}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S+"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"_}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{S+"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{#Stem document}
+  \CommentTok{# this deals with words like brasiiiiill or orgulhooooooooooo and change them to brasil and orgulho}
+   \NormalTok{regExp <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(letters, function(x) }\KeywordTok{paste0}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\KeywordTok{rep}\NormalTok{(x, }\DecValTok{3}\NormalTok{), }\DataTypeTok{collapse=}\StringTok{""}\NormalTok{), }\StringTok{"+"}\NormalTok{))}
+   \NormalTok{for(i in }\KeywordTok{seq_along}\NormalTok{(regExp))\{}
+       \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\DataTypeTok{x =} \NormalTok{tweet, }\DataTypeTok{pattern =} \NormalTok{regExp[[i]], }\DataTypeTok{replacement =} \NormalTok{letters[[i]])}
+    \NormalTok{\}}
+  \CommentTok{#deals with special characters in the text }
+  \NormalTok{tweet<-}\StringTok{ }\KeywordTok{iconv}\NormalTok{(tweet, }\StringTok{"latin1"}\NormalTok{, }\StringTok{"ASCII"}\NormalTok{, }\StringTok{""}\NormalTok{)}
+  \CommentTok{#Sten words}
+  \NormalTok{tweet <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{stemDocument}\NormalTok{(tweet, }\DataTypeTok{language =} \StringTok{"pt"}\NormalTok{)}
+  \CommentTok{# remove words less than 2 characters}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"(}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{b)?}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{w\{1,2\}(}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{b)?"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{#Remove leading and/or trailing whitespace and other white spaces}
+  \NormalTok{tweet <-}\KeywordTok{trimws}\NormalTok{(tweet)}
+  \NormalTok{tweet <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[ }\CharTok{\textbackslash{}t}\StringTok{]\{2,\}"}\NormalTok{, }\StringTok{" "}\NormalTok{, tweet)}
+  \CommentTok{# bind processed tweets with the data frame}
+ \NormalTok{x <-}\StringTok{ }\KeywordTok{data.frame} \NormalTok{(}\KeywordTok{cbind.data.frame}\NormalTok{(}\DataTypeTok{id =} \NormalTok{x$id,}
+                         \DataTypeTok{tweet_text_ =} \NormalTok{x$tweet_text,}
+                         \DataTypeTok{sentiment =} \NormalTok{x$sentiment,}
+                          \DataTypeTok{text_sa =} \NormalTok{tweet))    }
+                           
+  \KeywordTok{return}\NormalTok{(x)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Now we apply the function to the dataset to process the tweets in
+Portuguese.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{TwitTerData_PT_Processed <-}\StringTok{ }\KeywordTok{ProcessTweets_PT}\NormalTok{(TwitTerData_PT)}
+
+\KeywordTok{str}\NormalTok{(TwitTerData_PT_Processed)}
+\end{Highlighting}
+\end{Shaded}
+
+Remove tweets that have no text after the pre-processing step. The
+variable \texttt{text\_sa} was converted as a factor and it needs to be
+a character vector.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{TwitTerData_PT_Processed$text_sa <-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(TwitTerData_PT_Processed$text_sa)}
+
+\CommentTok{#Filter out tweets that have no words associated after the initial processing}
+\NormalTok{TwitTerData_PT_Processed <-}\StringTok{ }\NormalTok{TwitTerData_PT_Processed %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(text_sa !=}\StringTok{ ""}\NormalTok{)}
+
+\KeywordTok{saveRDS}\NormalTok{(TwitTerData_PT_Processed, }\StringTok{"../data/labeled_pt/TwitTerData_PT_Processed.RDS"}\NormalTok{)}
+  
+\KeywordTok{str}\NormalTok{(TwitTerData_PT_Processed)}
+\end{Highlighting}
+\end{Shaded}
+
+The next step is to extract the features of the tweets by converting the
+processed text to a document text matrix.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Generate document text matrix}
+
+\NormalTok{PT_TweetCorpus <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{Corpus}\NormalTok{(tm::}\KeywordTok{VectorSource}\NormalTok{(TwitTerData_PT_Processed$text_sa))}
+
+\NormalTok{dtm_PT <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{DocumentTermMatrix}\NormalTok{(PT_TweetCorpus)}
+
+\KeywordTok{saveRDS}\NormalTok{(dtm_PT, }\StringTok{"../data/labeled_pt/dtm_PT.RDS"}\NormalTok{)}
+
+\CommentTok{#remove sparse terms}
+\NormalTok{dtm_PT_sparse <-}\StringTok{ }\NormalTok{tm::}\KeywordTok{removeSparseTerms}\NormalTok{(dtm_PT, .}\DecValTok{99}\NormalTok{)}
+
+\KeywordTok{saveRDS}\NormalTok{(dtm_PT_sparse, }\StringTok{"../data/labeled_pt/dtm_PT_sparse.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Need to increase memory size to complete this part because the configuration of my machine}
+\KeywordTok{memory.limit}\NormalTok{(}\DataTypeTok{size=}\DecValTok{53000}\NormalTok{)}
+
+\CommentTok{#convert dtm as a matrix}
+\NormalTok{PTdtm <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(dtm_PT_sparse)}
+
+\KeywordTok{saveRDS}\NormalTok{(PTdtm, }\StringTok{"../data/labeled_pt/PTdtm.RDS"}\NormalTok{)}
+
+\CommentTok{#convert matrix as data frame}
+\NormalTok{PTdtmDF <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(PTdtm)}
+
+\CommentTok{#add sentiment target to the data frame}
+\NormalTok{PTdtmDF_sa <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(PTdtmDF, }\DataTypeTok{sentiment_target =} \NormalTok{TwitTerData_PT_Processed$sentiment)}
+
+\CommentTok{#confirm there are not Na values in the dataset}
+\KeywordTok{anyNA}\NormalTok{(PTdtmDF_sa)}
+
+\CommentTok{#save EN_dtm as a RDS}
+\KeywordTok{saveRDS} \NormalTok{(PTdtmDF_sa, }\StringTok{"../data/labeled_pt/PTdtmDF_sa.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+After converting the dataset to a document text matrix, the next step is
+to start building the classification model. The classification model
+used in this project is based on the naive Bayes logistic algorithm.
+Because of machine configuration, we will only use 70\% of the data and
+split it in 80/20 for training and testing.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{PTdtmDF_sa <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/labeled_pt/PTdtmDF_sa.RDS"}\NormalTok{) ## - > start here if you only want to run the model}
+
+
+\CommentTok{#Filter out the dataset with the tweets extracted linked to the venezuelan conflict }
+\NormalTok{holdout_pt <-}\StringTok{ }\KeywordTok{is.na}\NormalTok{(PTdtmDF_sa$sentiment_target)}
+
+\NormalTok{PTdtmDF_sa <-}\StringTok{ }\NormalTok{PTdtmDF_sa[!holdout_pt, ]}
+
+
+\CommentTok{# Extract sample of the dataset   }
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{9876}\NormalTok{)}
+\NormalTok{PT_index <-}\StringTok{ }\NormalTok{caret::}\KeywordTok{createDataPartition}\NormalTok{(PTdtmDF_sa$sentiment_target, }\DataTypeTok{p =} \FloatTok{0.7}\NormalTok{, }
+                                       \DataTypeTok{list =} \OtherTok{FALSE}\NormalTok{, }
+                                       \DataTypeTok{times =} \DecValTok{1}\NormalTok{)}
+
+\NormalTok{PTdtmDF_sample <-}\StringTok{ }\NormalTok{PTdtmDF_sa[PT_index, ]}
+
+\CommentTok{#confirm that the number of classification variables is distributed equally}
+\KeywordTok{table}\NormalTok{(PTdtmDF_sample$sentiment)}
+\end{Highlighting}
+\end{Shaded}
+
+Now we have the sample consisting of 172,524 negative tweets and 173,320
+positive tweets. This dataset will be split in training and testing.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Split dataset in training (80%) and testing (20%)}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2312}\NormalTok{)}
+\NormalTok{PT_index_sample <-}\StringTok{ }\NormalTok{caret::}\KeywordTok{createDataPartition}\NormalTok{(PTdtmDF_sample$sentiment, }\DataTypeTok{p =} \FloatTok{0.8}\NormalTok{, }
+                                             \DataTypeTok{list =} \OtherTok{FALSE}\NormalTok{, }
+                                             \DataTypeTok{times =} \DecValTok{1}\NormalTok{)      }
+
+\NormalTok{PT_training <-}\StringTok{ }\NormalTok{PTdtmDF_sample[PT_index_sample, ]}
+\NormalTok{PT_test  <-}\StringTok{ }\NormalTok{PTdtmDF_sample[-PT_index_sample,]}
+
+\CommentTok{#verify the distribution of the dataset }
+\KeywordTok{table}\NormalTok{(PT_training$sentiment_target)}
+
+    \CommentTok{#save EN_dtm as a RDS}
+    \KeywordTok{saveRDS} \NormalTok{(PT_training, }\StringTok{"../data/labeled_pt/PT_training.RDS"}\NormalTok{)}
+    \KeywordTok{saveRDS} \NormalTok{(PT_test, }\StringTok{"../data/labeled_pt/PT_test.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The final step is to run the classification model, using the Bayesian
+Generalized Linear Models for supervised machine learning.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Need to increase memory to }
+\KeywordTok{memory.limit}\NormalTok{(}\DataTypeTok{size=} \DecValTok{53000}\NormalTok{)    }
+
+\NormalTok{PT_training <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/labeled_pt/PT_training.RDS"}\NormalTok{)}
+
+
+\CommentTok{# Training the model}
+\NormalTok{StartTIme <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{fit_pt <-}\StringTok{ }\NormalTok{caret::}\KeywordTok{train}\NormalTok{(sentiment_target ~}\StringTok{ }\NormalTok{., }\DataTypeTok{data =} \NormalTok{PT_training, }\DataTypeTok{method =} \StringTok{'bayesglm'}\NormalTok{)}
+\NormalTok{EndTime <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{EndTime -}\StringTok{ }\NormalTok{StartTIme}
+
+
+\KeywordTok{saveRDS} \NormalTok{(fit_pt, }\StringTok{"../data/labeled_pt/fit_pt.RDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+And test the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Need to increase memory to run the process in my machine}
+\KeywordTok{memory.limit}\NormalTok{(}\DataTypeTok{size=} \DecValTok{53000}\NormalTok{)    }
+
+\NormalTok{PT_test <-}\StringTok{ }\KeywordTok{readRDS} \NormalTok{(}\StringTok{"../data/labeled_pt/PT_test.RDS"}\NormalTok{)}
+\NormalTok{fit_pt <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/labeled_pt/fit_pt.RDS"}\NormalTok{)}
+
+
+
+\CommentTok{# Testing the model}
+\NormalTok{predict_pt <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(fit_pt, }\DataTypeTok{newdata =} \NormalTok{PT_test)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Verify the results}
+\NormalTok{fit_pt }
+
+\CommentTok{#confirm the results}
+\NormalTok{expected_PT <-}\StringTok{ }\NormalTok{PT_test$sentiment_target}
+
+\NormalTok{results_PT <-}\StringTok{ }\KeywordTok{confusionMatrix}\NormalTok{(}\DataTypeTok{data =} \NormalTok{predict_pt, }\DataTypeTok{reference =} \NormalTok{expected_PT)}
+
+\NormalTok{results_PT}
+\end{Highlighting}
+\end{Shaded}
+
+**** Insert here classification results *******
+
+\subsubsection{4. Predictions and analysis of
+results}\label{predictions-and-analysis-of-results}
+
+With the classification models created in the previous phase of the
+project, we now apply the model to the data extraction for each
+language.
+
+\paragraph{4.1 Prediction for Tweets in
+English}\label{prediction-for-tweets-in-english}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ENdtmDF_sa <-}\StringTok{ }\KeywordTok{readRDS} \NormalTok{(}\StringTok{"../data/labeled_en/ENdtmDF_sa.RDS"}\NormalTok{)}
+
+\CommentTok{#get the extracted data to run the classiffier}
+\NormalTok{en_vzla_holdout <-}\StringTok{ }\NormalTok{ENdtmDF_sa[holdout_en, ]}
+
+\CommentTok{#Run the classification model}
+\NormalTok{en_vzla_prediction <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(fit, }\DataTypeTok{newdata =} \NormalTok{en_vzla_holdout)}
+
+
+\CommentTok{#Add the classification to the tweets}
+
+\NormalTok{en_vzla_predictionDF <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(en_vzla_holdout, en_vzla_prediction)}
+
+\NormalTok{en_vzla_predictionDF <-}\StringTok{ }\NormalTok{en_vzla_predictionDF%>%}\StringTok{ }
+\StringTok{  }\NormalTok{tibble::}\KeywordTok{rownames_to_column}\NormalTok{(}\DataTypeTok{var =} \StringTok{"rowid"}\NormalTok{) %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{select}\NormalTok{(rowid, en_vzla_prediction)}
+
+
+\NormalTok{TwitTerData_EN_Processed_vla <-}\StringTok{ }\NormalTok{TwitTerData_EN_Processed[holdout_en, ] %>%}\StringTok{ }
+\StringTok{  }\NormalTok{tibble::}\KeywordTok{rownames_to_column}\NormalTok{(}\DataTypeTok{var =} \StringTok{"rowid"}\NormalTok{)}
+
+\NormalTok{en_vzla_predictionDF_tweets <-}\StringTok{ }\NormalTok{en_vzla_predictionDF %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{left_join}\NormalTok{(TwitTerData_EN_Processed_vla, }\DataTypeTok{by =} \StringTok{"rowid"}\NormalTok{) %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(id, text, text_sa, }\DataTypeTok{sentiment =} \NormalTok{en_vzla_prediction)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Get results of the predictions and compare some results}
+\KeywordTok{table}\NormalTok{(en_vzla_predictionDF_tweets$sentiment)}
+
+
+\CommentTok{#See some results of the negative classification}
+\NormalTok{negative_en <-}\StringTok{ }\NormalTok{en_vzla_predictionDF_tweets %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{filter}\NormalTok{(sentiment ==}\StringTok{ }\DecValTok{0}\NormalTok{) %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(text, text_sa)}
+
+\KeywordTok{tail}\NormalTok{(negative_en, }\DataTypeTok{n=}\DecValTok{20}\NormalTok{)}
+
+\CommentTok{#Test results with some of the words}
+\NormalTok{negative_en_words <-}\StringTok{ }\NormalTok{en_vzla_predictionDF_tweets %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{filter}\NormalTok{(}\KeywordTok{grepl}\NormalTok{(}\StringTok{'bad|harm'}\NormalTok{, text)) %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(text, text_sa, sentiment)}
+
+\CommentTok{#see how tweets with these words were classified}
+\KeywordTok{table}\NormalTok{(negative_en_words$sentiment)}
+
+\NormalTok{negative_en_words_test <-}\StringTok{ }\NormalTok{negative_en_words %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{filter}\NormalTok{(sentiment ==}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{4.2 Prediction for Tweets in
+Portuguese}\label{prediction-for-tweets-in-portuguese}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{PTdtmDF_sa <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"../data/labeled_pt/PTdtmDF_sa.RDS"}\NormalTok{)}
+
+
+\CommentTok{#Filter out the dataset with the tweets extracted linked to the venezuelan conflict }
+\NormalTok{holdout_pt <-}\StringTok{ }\KeywordTok{is.na}\NormalTok{(PTdtmDF_sa$sentiment_target)}
+
+
+\CommentTok{#get the extracted data to run the classiffier}
+\NormalTok{pt_vzla_holdout <-}\StringTok{ }\NormalTok{PTdtmDF_sa[holdout_pt, ]}
+
+\CommentTok{#Run the classification model}
+\NormalTok{pt_vzla_prediction <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(fit_pt, }\DataTypeTok{newdata =} \NormalTok{pt_vzla_holdout)}
+
+
+\CommentTok{#Add the classification to the tweets}
+
+\NormalTok{pt_vzla_predictionDF <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(pt_vzla_holdout, pt_vzla_prediction)}
+
+\NormalTok{pt_vzla_predictionDF <-}\StringTok{ }\NormalTok{pt_vzla_predictionDF%>%}\StringTok{ }
+\StringTok{  }\NormalTok{tibble::}\KeywordTok{rownames_to_column}\NormalTok{(}\DataTypeTok{var =} \StringTok{"rowid"}\NormalTok{) %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{select}\NormalTok{(rowid, pt_vzla_prediction)}
+
+
+\NormalTok{TwitTerData_PT_Processed_vla <-}\StringTok{ }\NormalTok{TwitTerData_PT_Processed[holdout_pt, ] %>%}\StringTok{ }
+\StringTok{  }\NormalTok{tibble::}\KeywordTok{rownames_to_column}\NormalTok{(}\DataTypeTok{var =} \StringTok{"rowid"}\NormalTok{)}
+
+\KeywordTok{str}\NormalTok{(TwitTerData_PT_Processed_vla)}
+
+\NormalTok{pt_vzla_predictionDF_tweets <-}\StringTok{ }\NormalTok{pt_vzla_predictionDF %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{left_join}\NormalTok{(TwitTerData_PT_Processed_vla, }\DataTypeTok{by =} \StringTok{"rowid"}\NormalTok{) %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(id, tweet_text_, text_sa, }\DataTypeTok{sentiment =} \NormalTok{pt_vzla_prediction)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Get results of the predictions and compare some results}
+\KeywordTok{table}\NormalTok{(pt_vzla_predictionDF_tweets$sentiment)}
+
+
+\CommentTok{#See some results of the negative classification}
+\NormalTok{negative_pt <-}\StringTok{ }\NormalTok{pt_vzla_predictionDF_tweets %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{filter}\NormalTok{(sentiment ==}\StringTok{ }\DecValTok{0}\NormalTok{) %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(tweet_text_, text_sa) %>%}\StringTok{ }\NormalTok{collect}
+
+\KeywordTok{head}\NormalTok{(negative_pt, }\DataTypeTok{n=}\DecValTok{20}\NormalTok{)}
+
+\CommentTok{#Test results with some of the words}
+\NormalTok{negative_pt_words <-}\StringTok{ }\NormalTok{pt_vzla_predictionDF_tweets %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{filter}\NormalTok{(}\KeywordTok{grepl}\NormalTok{(}\StringTok{'miserável|ditador'}\NormalTok{, tweet_text_)) %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(tweet_text_, text_sa, sentiment) %>%}\StringTok{ }\NormalTok{collect}
+
+\CommentTok{#see how tweets with these words were classified}
+\KeywordTok{table}\NormalTok{(negative_pt_words$sentiment)}
+
+\NormalTok{negative_en_words_test <-}\StringTok{ }\NormalTok{negative_en_words %>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr::}\KeywordTok{filter}\NormalTok{(sentiment ==}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{5. Lessons learned and next
+steps}\label{lessons-learned-and-next-steps}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sessionInfo}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## R version 3.5.3 (2019-03-11)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 17763)
+## 
+## Matrix products: default
+## 
+## locale:
+## [1] LC_COLLATE=English_Canada.1252  LC_CTYPE=English_Canada.1252   
+## [3] LC_MONETARY=English_Canada.1252 LC_NUMERIC=C                   
+## [5] LC_TIME=English_Canada.1252    
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] plyr_1.8.4      purrr_0.3.2     twitteR_1.1.9   tm_0.7-6       
+##  [5] NLP_0.2-0       magrittr_1.5    dplyr_0.8.0.1   caret_6.0-82   
+##  [9] ggplot2_3.1.1   lattice_0.20-38
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_0.2.5   xfun_0.6           slam_0.1-45       
+##  [4] reshape2_1.4.3     splines_3.5.3      colorspace_1.4-1  
+##  [7] generics_0.0.2     htmltools_0.3.6    stats4_3.5.3      
+## [10] yaml_2.2.0         survival_2.43-3    prodlim_2018.04.18
+## [13] rlang_0.3.4        ModelMetrics_1.2.2 pillar_1.3.1      
+## [16] DBI_1.0.0          glue_1.3.1         withr_2.1.2       
+## [19] bit64_0.9-7        foreach_1.4.4      lava_1.6.5        
+## [22] stringr_1.4.0      timeDate_3043.102  munsell_0.5.0     
+## [25] gtable_0.3.0       recipes_0.1.5      codetools_0.2-16  
+## [28] evaluate_0.13      knitr_1.22         parallel_3.5.3    
+## [31] class_7.3-15       Rcpp_1.0.1         scales_1.0.0      
+## [34] ipred_0.9-8        bit_1.1-14         rjson_0.2.20      
+## [37] digest_0.6.18      stringi_1.4.3      grid_3.5.3        
+## [40] tools_3.5.3        lazyeval_0.2.2     tibble_2.1.1      
+## [43] crayon_1.3.4       pkgconfig_2.0.2    MASS_7.3-51.1     
+## [46] Matrix_1.2-15      xml2_1.2.0         data.table_1.12.2 
+## [49] lubridate_1.7.4    gower_0.2.0        httr_1.4.0        
+## [52] assertthat_0.2.1   rmarkdown_1.12     iterators_1.0.10  
+## [55] R6_2.4.0           rpart_4.1-13       nnet_7.3-12       
+## [58] nlme_3.1-137       compiler_3.5.3
+\end{verbatim}
+
+\subsubsection{References}\label{references}
+
+{[}1{]} Go, A., Bhayani, R. and Huang, L., 2009. Twitter sentiment
+classification using distant supervision. CS224N Project Report,
+Stanford, 1(2009), p.12. Retrieved from
+\url{https://www.kaggle.com/kazanova/sentiment140}"
+
+{[}2{]} de Santiago, R. Portuguese tweets for sentiment analysis.
+Retrieved from
+\url{https://www.kaggle.com/augustop/portuguese-tweets-for-sentiment-analysis}
+
+
+\end{document}
