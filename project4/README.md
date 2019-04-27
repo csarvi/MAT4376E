@@ -1,18 +1,7 @@
-   
----
-title: "Twitter Multilingual Sentiment Analysis"
-author: "César Villamizar, José de Melo"
-date: "April 26, 2019"
-output:
-  html_document: default
-  pdf_document: default
----
-  
-  ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+### Twitter Multilingual Sentiment Analysis
 
-##Context and data questions
+## Context and data questions
+
 The purpose of this document is to present an approach to classify tweets in English and Portuguese using machine learning techniques for sentiment analysis.  
 
 We will be focusing on a topic that has been on the international news since the beginning of the year ["the Venezuelan presidential crisis"](https://en.wikipedia.org/wiki/2019_Venezuelan_presidential_crisis).
@@ -334,7 +323,7 @@ saveRDS(dtm_EN_sparse, "../data/labeled_en/dtm_EN_sparse.RDS")
 
 We used the sparse term function of the caret package to filter out terms this will remove terms that are more sparse than 0.993. The following plot presents a view of the most frequent words in the English corpus for the word retained after applying the sparse function.  
 
-``` {r include=TRUE, eval= FALSE}
+``` r
 # Frequency
 memory.limit(size= 53000)    
 freq_en <- sort(colSums(as.matrix(dtm_EN_sparse)), decreasing=TRUE)
