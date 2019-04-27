@@ -4,6 +4,8 @@
 
 ## [Download files for all projects](https://1drv.ms/f/s!AuPYlNGhb7JXhKM_3OeNnD7KdTq4Zw)
 
-## [Project 2](https://github.com/jdemello/mat4376/tree/master/project2)
+Links to José's GitHub Repository
 
-## [Project 3](https://github.com/jdemello/mat4376/tree/master/project3)
+## [Project 2 - Classification](https://github.com/jdemello/mat4376/tree/master/project2)
+
+## [Project 3 - Clustering](https://github.com/jdemello/mat4376/tree/master/project3)
