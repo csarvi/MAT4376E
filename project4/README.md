@@ -400,7 +400,7 @@ summary(freq_en)
 set.seed(123)
 wordcloud(names(freq_en), freq_en, min.freq= quantile(freq_en, .75), colors=brewer.pal(6, "Dark2"))
 ```
-
+![](./imgages/en_wordcloud.png)
 
 ``` r
 #Need to increase memory size to complete this part because the configuration of my machine
