@@ -1,4 +1,4 @@
-### Twitter Multilingual Sentiment Analysis
+# Twitter Multilingual Sentiment Analysis
 
 ## Context and data questions
 
