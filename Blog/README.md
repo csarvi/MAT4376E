@@ -100,3 +100,12 @@ u15_html <- lapply(seq_along(u15), function(x) {
   return(y)
   })
 ```
+Now we retrieve the nodes `'.gs_ai_name, .gs_ai_cby'` from each of the web pages containing the name of the author and their citations.
+
+```r 
+u15_text <- lapply(seq_along(u15_html), function(x) {
+   y <- rvest::html_nodes(u15_html[[x]], '.gs_ai_name, .gs_ai_cby')
+   z <- rvest::html_text(y)
+  return(z)
+  })
+```
