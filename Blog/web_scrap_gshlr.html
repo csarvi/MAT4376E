@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="César Villamizar" />
+<meta name="author" content="C?sar Villamizar" />
 
 <meta name="date" content="2019-04-26" />
 
@@ -186,7 +186,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Scraping bibliometric data using R</h1>
-<h4 class="author"><em>César Villamizar</em></h4>
+<h4 class="author"><em>C?sar Villamizar</em></h4>
 <h4 class="date"><em>April 26, 2019</em></h4>
 
 </div>
@@ -235,13 +235,13 @@ rank_univ_can  &lt;- wikiScrap(rankingCanUniv, 2)</code></pre>
 </div>
 <div id="scraping-lists-of-authors-and-citations-by-university-top-10" class="section level3">
 <h3>Scraping lists of authors and citations by university (Top 10)</h3>
-<p>Using the information obtained from the Wikipedia page, I will create a data frame with a unique identifier by institutions, removing words like University and Université.</p>
+<p>Using the information obtained from the Wikipedia page, I will create a data frame with a unique identifier by institutions, removing words like University and Universit?.</p>
 <pre class="r"><code># Creating a normalized list of u15 universities
 u15 &lt;- u15 %&gt;% 
   stringr::str_replace(&quot;University of&quot;, &quot; &quot;) %&gt;% 
   stringr::str_replace(&quot;University&quot;, &quot; &quot;) %&gt;% 
-  stringr::str_replace(&quot;Université de&quot;, &quot; &quot;) %&gt;% 
-  stringr::str_replace(&quot;Université&quot;, &quot; &quot;) %&gt;% 
+  stringr::str_replace(&quot;Universit? de&quot;, &quot; &quot;) %&gt;% 
+  stringr::str_replace(&quot;Universit?&quot;, &quot; &quot;) %&gt;% 
   stringr::str_replace(&quot;Ontario&quot;, &quot; &quot;) %&gt;% 
   stringr::str_trim()</code></pre>
 <p>Google scholar include the <code>id</code> of the institution at the end of the url. Next step is to manually search the list of institutions’ ids and merge the data with the university name.</p>
@@ -261,10 +261,16 @@ u15_id &lt;- cbind(u15,ins_id)</code></pre>
 <pre class="r"><code>#create a function to read the html using the links of the institutions
 u15_html &lt;- lapply(seq_along(u15), function(x) {
    y &lt;- xml2::read_html(paste0(url_ins, x))
-  print(&quot;Html was read and saved in a list, waiting 5 seconds to read next html...&quot;)
+  print(&quot;html was read and saved in a list, waiting 5 seconds to read next html...&quot;)
   Sys.sleep(time = 5)
   print(&quot;Starting to read next html...&quot;)
   return(y)
+  })</code></pre>
+<p>Now we retrieve the nodes <code>'.gs_ai_name, .gs_ai_cby'</code> from each of the web pages containing the name of the author and their citations.</p>
+<pre class="r"><code>u15_text &lt;- lapply(seq_along(u15_html), function(x) {
+   y &lt;- rvest::html_nodes(u15_html[[x]], '.gs_ai_name, .gs_ai_cby')
+   z &lt;- rvest::html_text(y)
+  return(z)
   })</code></pre>
 </div>
 
