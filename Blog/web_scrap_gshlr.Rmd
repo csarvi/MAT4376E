@@ -1,6 +1,6 @@
 ---
 title: "Scraping bibliometric data using R"
-author: "C?sar Villamizar"
+author: "César Villamizar"
 date: "April 26, 2019"
 output: html_document
 ---
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE,
                        results = "hide" )
 ```
 
-This blog article is created to describe how to scrape data from html and Javascript rendered web pages using R and RStudio. I'm assuming that you have a basic knowledge of html and Javascript rendered websites. If not, I strongly recommend reading before these two articles : [Introduction to web scraping](https://data-lessons.github.io/library-webscraping-DEPRECATED/02-csssel/) and [Scraping a JS-Rendered Page](`https://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/Scraping_a_Webpage_Rendered_by_Javascript_Using_Python.php).
+This blog article is created to describe how to scrape data from html web pages using R and RStudio. I'm assuming that you have a basic knowledge of html websites. If not, I strongly recommend reading before these two articles : [Introduction to web scraping](https://data-lessons.github.io/library-webscraping-DEPRECATED/02-csssel/) and [Scraping a JS-Rendered Page](`https://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/Scraping_a_Webpage_Rendered_by_Javascript_Using_Python.php).  
 
 ### Terms of use
 
@@ -18,7 +18,7 @@ It is important to understand that while the information you find in most websit
 
 For this blog post, I will explore how to extract data from Wikipedia and Google scholar. The information to extract is related to bibliometric data of [the group of 15 Canadian Research Universities (U15).](https://en.wikipedia.org/wiki/U15_Group_of_Canadian_Research_Universities) and their top 10 researches by number of citations.
 
-The main packages to extract this information are `rvest` and `tidyverse` developed by [Hadley Wickham](https://cran.r-project.org/web/checks/check_results_hadley_at_rstudio.com.html]).  The package `scholar` will be used to show a co-citation analysis and main areas of research of the authors by university.
+The main packages to extract this information are `rvest` and `tidyverse` developed by [Hadley Wickham](https://cran.r-project.org/web/checks/check_results_hadley_at_rstudio.com.html]). 
 
 ### Data scraping: HTML websites
 
@@ -29,8 +29,6 @@ library(xml2)
 library(httr)
 library(tidyverse)
 library(magrittr)
-library(splashr)
-library(scholar )
 ```
 
 Firstly, we'll obtain a list of the U15 universities from Wikipedia. By looking at the source code you can see that most of the tables in a Wikipedia page, have the classification `<table class="wikitable sortable">` in their configuration. The first table is most of the time the info card that you can see at the top right side of the page. The function `wikiScrap` will let you select any table from a Wikipedia page and convert it to a data frame. 
@@ -67,15 +65,15 @@ You still need to do some data wrangling to obtain a clean dataset that you can 
 
 ### Scraping lists of authors and citations by university (Top 10)
 
-Using the information obtained from the Wikipedia page, I will create a data frame with a unique identifier by institutions, removing words like University and Universit?.
+Using the information obtained from the Wikipedia page, I will create a data frame with a unique identifier by institutions, removing words like University and University.
 
 ```{r, e, include=TRUE, eval=FALSE }
 # Creating a normalized list of u15 universities
 u15 <- u15 %>% 
   stringr::str_replace("University of", " ") %>% 
   stringr::str_replace("University", " ") %>% 
-  stringr::str_replace("Universit? de", " ") %>% 
-  stringr::str_replace("Universit?", " ") %>% 
+  stringr::str_replace("Université de", " ") %>% 
+  stringr::str_replace("Université", " ") %>% 
   stringr::str_replace("Ontario", " ") %>% 
   stringr::str_trim()
 ```
@@ -94,32 +92,75 @@ ins_id <- c("16627554827500071773", "13655899619131983200", "2186568608501296974
             "8515235176732148308", "12436753108180256887", "4065822778065209794")
 
 #merge data to identify the id with the institution
-u15_id <- cbind(u15,ins_id)
+u15tbl<- cbind(u15,ins_id)
 
 ````
+
+
+The next step is to create a function to retrieve data from the nodes `.gs_ai_name`that contains the author and `.gs_ai_cby'` that has the numer of citations. 
+
+```{r, include=TRUE, eval=FALSE}
+#Creating functions to extrac author and citations data
+get_author <- function(x){
+        x %>% 
+        html_nodes('.gs_ai_name') %>%      
+        html_text() %>% 
+        str_trim() %>%                       
+        unlist()    
+}
+
+get_citations <- function(x){
+        x %>% 
+        rvest::html_nodes('.gs_ai_cby') %>%      
+        rvest::html_text() %>% 
+        stringr::str_trim() %>%
+        stringr::str_replace ("Cited by ", "")%>%
+        as.numeric() %>% 
+        unlist()    
+}
+
+#Create a master function 
+get_data_table <- function (x) {
+  
+  i <- get_author(x)
+  j <- get_citations(x)
+ 
+  combined_data <- tibble (authors = i,
+                          citations = j)
+  
+    }
+
+#Testing the funtion with one URL 
+html_uottawa <- xml2::read_html(paste0(url_ins,u15tbl[10,2]))
+data <- get_data_table(html_uottawa)
+
+```
+
 
 The following lines of code will use the previous list of ids and the main link to read the html from each university and extract a list of 10 authors per university.
 
 ```{r include=TRUE, eval=FALSE}
 #create a function to read the html using the links of the institutions
-u15_html <- lapply(seq_along(u15), function(x) {
-   y <- xml2::read_html(paste0(url_ins, x))
-  print("html was read and saved in a list, waiting 5 seconds to read next html...")
+
+u15ID <- u15tbl[,2] 
+
+u15_data <- lapply(seq_along(u15ID), function(x) {
+  i <- paste0(url_ins,u15ID[[x]])
+  j  <- xml2::read_html(i)
+  k <- get_data_table(j)
+  print("html was read and data was saved in a list, waiting 5 seconds to read next html...")
   Sys.sleep(time = 5)
   print("Starting to read next html...")
-  return(y)
+  return(k)
   })
 
 
 ```
 
-Now we retrieve the nodes `'.gs_ai_name, .gs_ai_cby'` from each of the web pages containing the name of the author and their citations.
+The final result is a list containing the 15 tables with the top 10 researches by number of citations in Google Scholar.
 
-```{r include=TRUE, eval=FALSE}
-u15_text <- lapply(seq_along(u15_html), function(x) {
-   y <- rvest::html_nodes(u15_html[[x]], '.gs_ai_name, .gs_ai_cby')
-   z <- rvest::html_text(y)
-  return(z)
-  })
 
-```
+
+
+
+
