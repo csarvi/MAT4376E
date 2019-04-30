@@ -1,6 +1,6 @@
 ## Scraping bibliometric data using R
 
-This blog article is created to describe how to scrape data from html web pages using R and RStudio. I'm assuming that you have a basic knowledge of html websites. If not, I strongly recommend reading before these two articles : [Introduction to web scraping](https://data-lessons.github.io/library-webscraping-DEPRECATED/02-csssel/) and [Scraping a JS-Rendered Page](`https://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/Scraping_a_Webpage_Rendered_by_Javascript_Using_Python.php).  
+This blog article is created to describe how to scrape data from html web pages using R and RStudio. I'm assuming that you have a basic knowledge of html websites. If not, I strongly recommend reading before these two articles : [Introduction to web scraping](https://data-lessons.github.io/library-webscraping-DEPRECATED/02-csssel/) and [Scraping a JS-Rendered Page](https://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/Scraping_a_Webpage_Rendered_by_Javascript_Using_Python.php).  
 
 ### Terms of use
 
